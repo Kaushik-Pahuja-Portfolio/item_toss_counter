@@ -13,19 +13,19 @@ print("initializing...")
 
 #this is the list that you'll use to determine toss order. default just one normal item toss
 #assumes it is set to normal when you start executing
-toss_order = ["banana", "normal"]
+toss_order = ['normal']
 last_toss = 0
 template = {
+    "minfaust": cv.imread("templates/minifaust.png", cv.IMREAD_GRAYSCALE),
+    "tumpet": cv.imread("templates/trumpet.png", cv.IMREAD_GRAYSCALE),
+    "hammer": cv.imread("templates/hammer.png", cv.IMREAD_GRAYSCALE),
+    "bomb": cv.imread("templates/bomb.png", cv.IMREAD_GRAYSCALE),
     "100t": cv.imread("templates/100t.png", cv.IMREAD_GRAYSCALE),
     "afro": cv.imread("templates/afro.png", cv.IMREAD_GRAYSCALE),
     "banana": cv.imread("templates/banana.png", cv.IMREAD_GRAYSCALE),
-    "bomb": cv.imread("templates/bomb.png", cv.IMREAD_GRAYSCALE),
-    "donut": cv.imread("templates/donut.png", cv.IMREAD_GRAYSCALE),
-    "hammer": cv.imread("templates/hammer.png", cv.IMREAD_GRAYSCALE),
     "meteor": cv.imread("templates/meteor.png", cv.IMREAD_GRAYSCALE),
-    "minfaust": cv.imread("templates/minifaust.png", cv.IMREAD_GRAYSCALE),
     "peel": cv.imread("templates/peel.png", cv.IMREAD_GRAYSCALE),
-    "tumpet": cv.imread("templates/trumpet.png", cv.IMREAD_GRAYSCALE)
+    "donut": cv.imread("templates/donut.png", cv.IMREAD_GRAYSCALE),
 }
 count = {
     "bomb": 0,
@@ -69,27 +69,23 @@ def toss_item(item: str):
         sleep(0.2)
     keybinds.item()
     sleep(scrsht_time)
-    while item == 'peel' and read_item(False) != 'peel':
+    while item == 'peel' and match_items(False) != 'peel':
         keybinds.press(keybinds.reset)
         sleep(0.2)
         keybinds.item()
         sleep(scrsht_time)
-        
 
-def read_item(add=True):
+def match_items(add=True):
     screenshot = ImageGrab.grab()
     screenshot = np.array(screenshot)
     screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2GRAY)
     for k in template:
-        w, h = template[k].shape[::-1]
         result = cv.matchTemplate(screenshot, template[k], cv.TM_CCOEFF_NORMED)
-        loc = np.where(result >= 0.90)
-        for pt in zip(*loc[::-1]):
-            if add:
-                count[k] += 1
+        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+        if add and max_val >= 0.9:
+            count[k] += 1
             print("i see " + k + " #{}".format(count[k]))
             return k
-            break
 
 print("ready")
 
@@ -102,7 +98,7 @@ def main():
             #toss an item
             toss_item(i)
             if i == 'normal':
-                read_item()
+                match_items()
             sleep(0.55-scrsht_time)
 
 while True:
