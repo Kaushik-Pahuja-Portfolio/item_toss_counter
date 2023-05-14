@@ -113,5 +113,16 @@ t1.start()
 t2.start()
 t1.join()
 t2.join()
+try:
+    with open('item_counts.csv', mode='r') as infile:
+        if infile is not None:
+            reader = csv.reader(infile)
+            mydict = dict((rows[0],int(rows[1])) for rows in reader)
+            for k in mydict.keys():
+                if k in count.keys():
+                    count[k] += mydict[k]
+except:
+    print("item_counts.csv doesn't exist yet. no data to read.")
+    
 with open('item_counts.csv', 'w') as csvfile:
-    csvfile.writelines([','.join(count.keys()) + "\n", ','.join(map(str, list(count.values())))])
+    csvfile.writelines('\n'.join(map(lambda x: x+",{}".format(count[x]), count.keys())))
