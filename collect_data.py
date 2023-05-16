@@ -6,7 +6,7 @@ import time
 import keyboard
 import csv
 import keybinds
-from consts import get_item_index, item_mapping, scrsht_time, scrsht_bounds
+from consts import get_item_index, item_mapping, scrsht_time, scrsht_bounds, delete_failed_captures
 from threading import Event, Thread, Lock
 from math import floor
 from copy import copy
@@ -14,8 +14,8 @@ from copy import copy
 
 #this is the list that you'll use to determine toss order. default just one normal item toss
 #assumes it is set to normal when you start executing
-toss_order = ['normal']
-num_iterations = 50
+toss_order = ['minifaust','normal']
+num_iterations = 24
 last_toss = 0
 failcount = 0
 template = {
@@ -32,18 +32,6 @@ template = {
 }
 high_items  = ['minifaust', 'trumpet', 'hammer', 'bomb', '100t']
 low_items = ['afro', 'banana', 'meteor', 'peel', 'donut']
-
-import os, shutil
-folder = 'failed_captures'
-for filename in os.listdir(folder):
-    file_path = os.path.join(folder, filename)
-    try:
-        if os.path.isfile(file_path) or os.path.islink(file_path):
-            os.unlink(file_path)
-        elif os.path.isdir(file_path):
-            shutil.rmtree(file_path)
-    except Exception as e:
-        print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 count = {
     "bomb": 0,
@@ -124,8 +112,7 @@ def match_items(templates:list = None, trigger:Event = None, add=True, item=None
             if trigger_matched.is_set():
                 break
             m_coeff = check_item(screenshot, k)
-            if m_coeff > 0.9:
-                found = True
+            if m_coeff >= 0.9:
                 if add:
                     count[k] += 1
                 trigger_matched.set()
@@ -207,6 +194,7 @@ def print_data():
 
 
 if __name__ == "__main__":
+    delete_failed_captures()
     while True:
         if keyboard.is_pressed(keybinds.quit):
             print_data()
