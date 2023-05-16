@@ -37,4 +37,4 @@ set item to bomb.
 
 In your terminal run `screenshotter.py` (`python screenshoter.py`). follow the instructions in your terminal. You will need to take a second screenshot to get the peel (once again, follow the instructions in the terminal). If you got peel when you first chose banana, toss until you hit a banana, then swap the file names manually. After any item toss you may press the quit button to stop if you think you got a bad screenshot. 
 
-delete the old template images, and replace them with your screenshots. Crop to minimize the size of the templates, while still being recognizable. Now run `collect_data.py` as described above.
+delete the old template images, and replace them with your screenshots. Crop to minimize the size of the templates, while still being recognizable. Try to avoid including the stage and faust's fingers. Faust's finger positioning is literally rng. Now run `collect_data.py` as described above.

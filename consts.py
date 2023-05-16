@@ -1,3 +1,5 @@
+from math import floor
+scrsht_bounds =  (700, 450, 1100, 850)
 scrsht_time = 0.3
 item_mapping = {
     "normal": 0,
@@ -10,5 +12,9 @@ item_mapping = {
     "meteor": 6,
     "minifaust": 7,
     "trumpet": 8,
-    "hammer": 9
+    "hammer": 9,
+    "banana|peel": 14
 }
+
+def get_item_index(item):
+    return floor(item_mapping[item]) % 10

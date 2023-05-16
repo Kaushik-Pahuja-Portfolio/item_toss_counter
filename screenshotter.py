@@ -5,9 +5,8 @@ from PIL import ImageGrab
 import time
 import keyboard  # using module keyboard
 import keybinds
-from consts import scrsht_time
+from consts import scrsht_time, scrsht_bounds, item_mapping, get_item_index
 
-screenshot = None
 items = ["bomb", "100t", "donut", "banana", "afro", "meteor", "minifaust", "trumpet", "hammer"]
 
 print("set item toss to bomb. toss the item and take the screenshot, press your start button while in game.\nafter each item toss, move on to the next item and repeat this process")
@@ -18,9 +17,8 @@ for item in items:
             time.sleep(0.3)
             keybinds.item()
             time.sleep(scrsht_time)
-            screenshot = ImageGrab.grab()
-            screenshot = np.array(screenshot)
-            cv.imwrite(item+".png", screenshot)
+            screenshot = np.array(ImageGrab.grab(bbox=scrsht_bounds))
+            cv.imwrite("templates/"+item+".png", screenshot)
             time.sleep(1) #ensures no performance tanks from writing files
             break 
         elif keyboard.is_pressed(keybinds.quit):
@@ -34,9 +32,9 @@ while True:  # making a loop
             time.sleep(0.3)
             keybinds.item()
             time.sleep(scrsht_time)
-            screenshot = ImageGrab.grab()
+            screenshot = ImageGrab.grab(bbox=scrsht_bounds)
             screenshot = np.array(screenshot)
-            cv.imwrite("peel.png", screenshot)
+            cv.imwrite("templates/peel.png", screenshot)
             time.sleep(1)
         if keyboard.is_pressed(keybinds.quit):
             exit()
